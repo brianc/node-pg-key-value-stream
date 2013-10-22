@@ -29,7 +29,7 @@
     "concat-stream": "~1.0.1"
   },
   "dependencies": {
-    "mongo-sql": "~2.2.5",
+    "mongo-sql": "git://github.com/brianc/mongo-sql.git#respect-schema-name",
     "pg-query-stream": "~0.1.2",
     "okay": "~0.3.0"
   }
