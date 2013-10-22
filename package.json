@@ -1,7 +1,7 @@
 {
-  "name": "kvp-stream",
+  "name": "pg-key-value-stream",
   "version": "0.0.1",
-  "description": "Stream of key value pairs from postgres",
+  "description": "Stream of key value pairs from postgres, kind like leveldb, but...better?",
   "main": "index.js",
   "scripts": {
     "test": "mocha"
