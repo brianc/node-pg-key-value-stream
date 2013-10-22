@@ -1,6 +1,6 @@
 {
   "name": "pg-key-value-stream",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Stream of key value pairs from postgres, kind like leveldb, but...better?",
   "main": "index.js",
   "scripts": {
