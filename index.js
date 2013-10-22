@@ -6,7 +6,7 @@ var stream = require('stream')
 var query = require('./lib/query')
 
 var getStreamQuery = function(config) {
-  return mosql.sql({
+  var q = {
     type: 'select',
     table: config.table,
     columns: [{
@@ -15,8 +15,14 @@ var getStreamQuery = function(config) {
     }, {
       name: config.valueColumn,
       alias: 'value'
-    }]
-  }).toQuery()
+    }],
+    order: config.keyColumn
+  }
+  if(config.start) {
+    q.where = { }
+    q.where[config.keyColumn] = {$gte: config.start}
+  }
+  return mosql.sql(q).toQuery()
 }
 
 var getMapStream = function(config) {

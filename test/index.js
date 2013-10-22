@@ -73,14 +73,32 @@ describe('kvpStream', function() {
       var john = theBeatles.read()
       assert(john)
       john.value.drummer = false
-      john.save(done)
+      john.save(ok(done, function() {
+        setTimeout(done, 100)
+      }))
     })
   })
 
   it('save works', function() {
     var theBeatles = meetTheBeatles().pipe(concat(function(rows) {
-      assert.strictEqual(rows[0].value.drummer, false)
+      assert.equal(rows[0].value.name, 'John')
+      assert.strictEqual(rows[0].value.drummer, false, 'john should not be a dummer')
       assert.strictEqual(rows[1].value.drummer, undefined)
+    }))
+  })
+
+  it('can start farther down', function(done) {
+    var stream = kvpStream({
+      keyColumn: 'id',
+      valueColumn: 'data',
+      table: table,
+      start: 2
+    })
+    stream.pipe(concat(function(res) {
+      assert(res, 'should have result')
+      assert.equal(res.length, 3, 'should only return 3 but returned ' + res.length)
+      assert.equal(res[0].key, 2, 'first id should be 2 but was', + res[0].key)
+      done()
     }))
   })
 })
