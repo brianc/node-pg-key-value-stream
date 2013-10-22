@@ -1,0 +1,36 @@
+{
+  "name": "kvp-stream",
+  "version": "0.0.0",
+  "description": "Stream of key value pairs from postgres",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/brianc/kvp-stream.git"
+  },
+  "keywords": [
+    "postgres",
+    "key",
+    "value",
+    "pair",
+    "stream"
+  ],
+  "author": "Brian M. Carlson",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/brianc/kvp-stream/issues"
+  },
+  "devDependencies": {
+    "okay": "~0.3.0",
+    "pg.js": "~2.8.1",
+    "mocha": "~1.13.0",
+    "concat-stream": "~1.0.1"
+  },
+  "dependencies": {
+    "mongo-sql": "~2.2.5",
+    "pg-query-stream": "~0.1.1",
+    "okay": "~0.3.0"
+  }
+}
