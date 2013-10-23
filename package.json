@@ -30,7 +30,7 @@
   },
   "dependencies": {
     "mongo-sql": "~2.2.6",
-    "pg-query-stream": "~0.1.2",
+    "pg-query-stream": "~0.2.x",
     "okay": "~0.3.0"
   }
 }
