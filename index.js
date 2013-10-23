@@ -16,11 +16,18 @@ var getStreamQuery = function(config) {
       name: config.valueColumn,
       alias: 'value'
     }],
-    order: config.keyColumn
+    order: config.keyColumn,
+    where: {}
   }
   if(config.start) {
-    q.where = { }
     q.where[config.keyColumn] = {$gte: config.start}
+  }
+  if(config.end) {
+    q.where[config.keyColumn] = q.where[config.keyColumn] || {}
+    q.where[config.keyColumn]['$lte'] = config.end
+  }
+  if(config.limit) {
+    q.limit = config.limit
   }
   return mosql.sql(q).toQuery()
 }

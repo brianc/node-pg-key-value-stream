@@ -101,4 +101,36 @@ describe('kvpStream', function() {
       done()
     }))
   })
+
+  it('can end', function(done) {
+    var stream = kvpStream({
+      keyColumn: 'id',
+      valueColumn: 'data',
+      table: table,
+      start: 2,
+      end: 3
+    })
+    stream.pipe(concat(function(res) {
+      assert(res, 'should have result')
+      assert.equal(res.length, 2, 'should only return 2 but returned ' + res.length)
+      assert.equal(res[0].key, 2, 'first id should be 2 but was', + res[0].key)
+      assert.equal(res[1].key, 3, 'second id should be 3 but was', + res[1].key)
+      done()
+    }))
+  })
+
+  it('can limit', function(done) {
+    var stream = kvpStream({
+      keyColumn: 'id',
+      valueColumn: 'data',
+      table: table,
+      limit: 1
+    })
+    stream.pipe(concat(function(res) {
+      assert(res, 'should have result')
+      assert.equal(res.length, 1, 'should only return 1 but returned ' + res.length)
+      assert.equal(res[0].key, 1, 'first id should be 1 but was', + res[0].key)
+      done()
+    }))
+  })
 })
