@@ -133,4 +133,19 @@ describe('kvpStream', function() {
       done()
     }))
   })
+
+  it('can offset', function(done) {
+    var stream = kvpStream({
+      keyColumn: 'id',
+      valueColumn: 'data',
+      table: table,
+      limit: 1,
+      offset: 2
+    })
+    stream.pipe(concat(function(res) {
+      assert.equal(res.length, 1)
+      assert.equal(res[0].key, 3)
+      done()
+    }))
+  })
 })

@@ -29,6 +29,9 @@ var getStreamQuery = function(config) {
   if(config.limit) {
     q.limit = config.limit
   }
+  if(config.offset) {
+    q.offset = config.offset
+  }
   return mosql.sql(q).toQuery()
 }
 
