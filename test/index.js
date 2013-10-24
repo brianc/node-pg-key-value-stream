@@ -6,6 +6,8 @@ var assert = require('assert')
 
 var table = 'test_store'
 
+var beatles = require('./beatles')
+
 describe('kvpStream', function() {
   after(function(done) {
     query({
@@ -14,35 +16,9 @@ describe('kvpStream', function() {
       table: table
     }, done)
   })
-  before(function(done) {
-    var q = {
-      type: 'create-table',
-      ifNotExists: true,
-      table: table,
-      definition: {
-        id: {
-          type: 'serial',
-          primaryKey: true
-        },
-        data: {
-          type: 'json'
-        }
-      }
-    }
-    query({
-      type: 'drop-table',
-      ifExists: true,
-      table: table
-    }, function() {
-      query(q, ok(done, function() {
-        query({
-          type: 'insert',
-          table: table,
-          values: require('./beatles')
-        }, done)
-      }))
 
-    })
+  before(function(done) {
+    beatles.recreate(table, done)
   })
 
   var meetTheBeatles = function() {
@@ -147,5 +123,40 @@ describe('kvpStream', function() {
       assert.equal(res[0].key, 3)
       done()
     }))
+  })
+})
+
+describe('concurrency problems', function() {
+  var table = 'test_store'
+  before(function(done) {
+    beatles.recreate(table, done)
+  })
+
+  var theBeatles = function() {
+    return kvpStream({
+      table: table,
+      keyColumn: 'id',
+      valueColumn: 'data'
+    })
+  }
+
+  it('calls resolver function on error', function(done) {
+    var beatles = theBeatles()
+    beatles.once('readable', function() {
+      var john = beatles.read()
+      var futureBeatles = theBeatles()
+      futureBeatles.once('readable', function() {
+        var futureJohn = futureBeatles.read()
+
+        john.value.age = 22;
+        john.save(ok(done, function() {
+          futureJohn.value.age = 64;
+          futureJohn.save(function(err) {
+            assert(err, 'should throw conflict error')
+            done()
+          })
+        }))
+      })
+    })
   })
 })
