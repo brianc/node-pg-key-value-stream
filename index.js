@@ -16,8 +16,10 @@ var getStreamQuery = function(config) {
       name: config.valueColumn,
       alias: 'value'
     }],
-    order: config.keyColumn,
     where: {}
+  }
+  if(!config.noOrder) {
+    q.order = config.keyColumn
   }
   if(config.start) {
     q.where[config.keyColumn] = {$gte: config.start}
