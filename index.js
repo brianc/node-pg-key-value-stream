@@ -44,6 +44,7 @@ var getMapStream = function(config) {
   })
   mapStream._transform = function(data, _, cb) {
     data.save = config.saveFn
+    data.refresh = config.refreshFn
     this.push(data)
     cb()
   }
@@ -64,9 +65,31 @@ var attachSaveFn = function(config) {
   }
 }
 
+var attachRefreshFn = function(config) {
+  config.refreshFn = function(cb) {
+    var self = this
+    var q = {
+      type: 'select',
+      table: config.table,
+      columns:[{
+        name: config.valueColumn,
+        alias: 'value'
+      }],
+      where: {}
+    }
+    q.where[config.keyColumn] = this.key
+    query(q, function(err, rows) {
+      if(err) return cb(err);
+      self.value = rows[0].value
+      cb()
+    })
+  }
+}
+
 module.exports = function(config) {
   assert(config, 'missing required configuration')
   attachSaveFn(config)
+  attachRefreshFn(config)
   var moquery = getStreamQuery(config)
   var query = new QueryStream(moquery.text, moquery.values, config)
   var client = new pg.Client()

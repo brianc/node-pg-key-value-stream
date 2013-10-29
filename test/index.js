@@ -140,7 +140,7 @@ describe('concurrency problems', function() {
     })
   }
 
-  it('calls resolver function on error', function(done) {
+  it('refreshes', function(done) {
     var beatles = theBeatles()
     beatles.once('readable', function() {
       var john = beatles.read()
@@ -149,10 +149,12 @@ describe('concurrency problems', function() {
         var futureJohn = futureBeatles.read()
 
         john.value.age = 22;
+        john.value.singer = true;
         john.save(ok(done, function() {
-          futureJohn.value.age = 64;
-          futureJohn.save(function(err) {
-            assert(err, 'should throw conflict error')
+          assert(!futureJohn.singer)
+          futureJohn.refresh(function(err) {
+            assert.ifError(err)
+            assert(futureJohn.value.singer)
             done()
           })
         }))
